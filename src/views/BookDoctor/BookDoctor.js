@@ -22,7 +22,7 @@ const BookDoctor = () => {
       doctorId: params.id,
       date: moment(date).format('YYYY-MM-DD'),
     }
-    console.log(data)
+    // console.log(data)
 }
   return (
     <Container>
