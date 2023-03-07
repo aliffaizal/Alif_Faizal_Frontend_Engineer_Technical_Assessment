@@ -1,34 +1,35 @@
 import React, { useEffect, useState } from 'react'
-import { getDetailDoctor } from '../../store/actions'
+import { getDetailDoctor, bookDoctor } from '../../store/actions'
 import { connect } from "react-redux";
 import { useParams } from 'react-router-dom';
 import { Typography, Container, Card, CardContent, Grid, Button, TextField } from '@mui/material';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 import dayjs from 'dayjs';
-import moment, { now } from 'moment';
 import { useNavigate } from "react-router";
 import './DoctorDetail.css'
 
-const DoctorDetail = ({ getDetailDoctor, doctor }) => {
+const DoctorDetail = ({ getDetailDoctor, doctor, bookDoctor }) => {
   const navigate = useNavigate();
   const params = useParams();
   const [name, setName] = useState('')
   const [start, setStart] = useState('')
-  const [date, setDate] = useState('')
+  const [value, setValue] = useState('')
   const [time, setTime] = useState()
-
+  const [id, setId] = useState(Math.random)
   
   const submit = e => {
     e.preventDefault()
     const data = {
+      id: id.toString(),
+      status: 'confirmed',
       name: name,
-      start: start,
+      start: parseFloat(start),
       doctorId: params.id,
-      date: moment(date).format('YYYY-MM-DD'),
+      date: dayjs(value).format('YYYY-MM-DD'),
     }
+    bookDoctor(data, navigate);
   }
   useEffect(() => {
     getDetailDoctor(params.id)
@@ -37,12 +38,14 @@ const DoctorDetail = ({ getDetailDoctor, doctor }) => {
     setTime(doctor?.dataDetail?.opening_hours?.map(row => parseFloat(row.start)))
   }, [doctor])
   return (
-    <Container>
+    <Container maxWidth='xl'>
       <Card>
         <CardContent>
           <Grid container spacing={2}>
             <Grid item md={6}>
               <Typography>{doctor.dataDetail.name}</Typography>
+              <br/>
+              <Typography>Address : </Typography>
               <Typography>{doctor.dataDetail.address?.district}</Typography>
               <Typography>{doctor.dataDetail.address?.line_1} - {doctor.dataDetail.address?.line_2}</Typography>
             </Grid>
@@ -51,7 +54,7 @@ const DoctorDetail = ({ getDetailDoctor, doctor }) => {
                 {
                   doctor.dataDetail.opening_hours?.map((row, idx) =>
                     <div key={idx}>
-                      {row.isClosed ? <Typography>{row.day} CLOSED</Typography> : <Typography>{row.day} {row.start} AM - {row.end} PM</Typography>}
+                      {row.isClosed ? <Typography>{row.day} CLOSED</Typography> : <Typography>{row.day} {row.start} - {row.end}</Typography>}
                     </div>
                     )
                 }
@@ -59,7 +62,9 @@ const DoctorDetail = ({ getDetailDoctor, doctor }) => {
           </Grid>
         </CardContent>
       </Card>
+      <br/>
       <Typography>Fill the form below for book</Typography>
+      <br/>
       <form onSubmit={submit}>
         <Grid container spacing={2}>
           <Grid item md={12}>
@@ -90,7 +95,7 @@ const DoctorDetail = ({ getDetailDoctor, doctor }) => {
           </Grid>
           <Grid item md={12}>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <DatePicker  value={date} minDate={dayjs()} onChange={(newValue) => setDate(newValue)} required/>
+              <DatePicker label="Date" value={value} minDate={dayjs().add(1, 'day')} onChange={(newValue) => setValue(newValue)} required/>
             </LocalizationProvider>
           </Grid>
           <Grid item md={12}>
@@ -110,4 +115,5 @@ export const mapStateToProps = (state) => {
 
 export default connect(mapStateToProps, {
   getDetailDoctor,
+  bookDoctor
 })(DoctorDetail);

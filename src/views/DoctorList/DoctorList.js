@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import './DoctorList.css'
-import CustomRouterLink from '../../components/CustomRouterLink/CustomRouterLink';
-import { Avatar, Typography, Container, Grid, Card, CardContent, Button, Link } from '@mui/material';
+import { Avatar, Typography, Container, Grid, Card, CardContent, Button } from '@mui/material';
 import { getDoctor } from '../../store/actions'
 import { connect } from "react-redux";
 import { useNavigate } from "react-router";

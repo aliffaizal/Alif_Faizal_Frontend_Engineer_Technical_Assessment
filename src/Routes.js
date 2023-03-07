@@ -2,7 +2,8 @@ import React from 'react'
 import { Navigate, Routes as Switch, Route } from "react-router-dom";
 import DoctorList from './views/DoctorList/DoctorList'
 import DoctorDetail from './views/DoctorDetail/DoctorDetail'
-import BookDoctor from './views/BookDoctor/BookDoctor'
+import BookingList from './views/BookingList/BookingList'
+import BookingDetail from './views/BookingDetail/BookingDetail'
 
 import MainLayout from "./layouts/MainLayout";
 
@@ -28,11 +29,20 @@ const Routes = () => {
            }
        />
        <Route
-           path="/book-doctor/:id"
+           path="/booking-list"
            exact
            element={
            <MainLayout>
-               <BookDoctor />
+               <BookingList />
+           </MainLayout>
+           }
+       />
+       <Route
+           path="/booking-detail/:id"
+           exact
+           element={
+           <MainLayout>
+               <BookingDetail />
            </MainLayout>
            }
        />
